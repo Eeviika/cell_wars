@@ -38,8 +38,8 @@ pub fn key_to_command(key: KeyEvent) -> RawCommand {
         KeyCode::Left => RawCommand::MoveLeft,
         KeyCode::Right => RawCommand::MoveRight,
         KeyCode::Enter => RawCommand::Interact,
-        KeyCode::Char('s') | KeyCode::End => RawCommand::EndTurn,
-        KeyCode::Char('Q') | KeyCode::Esc => RawCommand::QuitGame,
+        KeyCode::Char('s') => RawCommand::EndTurn,
+        KeyCode::Esc => RawCommand::QuitGame,
         _ => RawCommand::None,
     }
 }
