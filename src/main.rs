@@ -74,7 +74,11 @@ fn player_turn(game: &mut Game) -> io::Result<()> {
     Ok(())
 }
 
-fn computer_turn(game: &mut Game) {}
+// This will panic. Please implement first!
+// todo: implement computer_turn
+fn computer_turn(_game: &mut Game) {
+    todo!("todo: implement computer_turn.");
+}
 
 fn main_game_loop(game: &mut Game) -> io::Result<()> {
     clear_screen()?;
