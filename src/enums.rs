@@ -28,10 +28,13 @@ pub enum GameDifficulty {
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum GameError {
     NotValidPosition,
-    NotValidAction,
+    NoCityAtTarget,
+    NoCityAtSource,
+    NoWallAtTarget,
+    TargetIsOccupied,
+    TargetIsSource,
     NotEnoughResources,
-    NoTarget,
-    BadTarget,
+    IO,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
