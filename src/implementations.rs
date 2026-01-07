@@ -160,6 +160,17 @@ impl Game {
         Ok(())
     }
 
+    pub fn draw_instructions(&self) -> io::Result<()> {
+        let screen_y = (GRID_Y_OFFSET + GRID_SIZE * 2) as u16;
+        move_cursor(0, screen_y)?;
+        print_with_color(
+            "[↑↓←→ to move, enter to interact, s to end turn, ESC to quit]",
+            Color::Black,
+            Color::Cyan,
+        )?;
+        Ok(())
+    }
+
     pub fn draw_grid_text(&self) -> io::Result<()> {
         for (y, _) in self.grid.iter().enumerate() {
             let screen_y = (GRID_Y_OFFSET + y * 2) as u16;
@@ -292,6 +303,7 @@ impl Game {
     pub fn draw(&self) -> io::Result<()> {
         self.draw_grid()?;
         self.draw_grid_text()?;
+        self.draw_instructions()?;
         self.draw_cell_info()?;
         Ok(())
     }
