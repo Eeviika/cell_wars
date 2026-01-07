@@ -52,19 +52,40 @@ fn main_menu_loop() -> io::Result<()> {
 }
 
 fn input_loop(game: &mut Game) -> io::Result<()> {
-    match event::read()? {
-        event::Event::Key(key) => match key_to_command(key) {
-            RawCommand::MoveUp => game.cursor_up(),
-            RawCommand::MoveDown => game.cursor_down(),
-            RawCommand::MoveLeft => game.cursor_left(),
-            RawCommand::MoveRight => game.cursor_right(),
+    loop {
+        match event::read()? {
+            event::Event::Key(key) => match key_to_command(key) {
+                RawCommand::MoveUp => {
+                    game.cursor_up();
+                    game.draw()?;
+                }
+                RawCommand::MoveDown => {
+                    game.cursor_down();
+                    game.draw()?;
+                }
+                RawCommand::MoveLeft => {
+                    game.cursor_left();
+                    game.draw()?;
+                }
+                RawCommand::MoveRight => {
+                    game.cursor_right();
+                    game.draw()?;
+                }
 
-            RawCommand::Interact => {}
-            RawCommand::EndTurn => {}
-            RawCommand::QuitGame => game.state = GameState::Stalemate,
-            RawCommand::None => {}
-        },
-        _ => {}
+                RawCommand::Interact => {
+                    break;
+                }
+                RawCommand::EndTurn => {
+                    break;
+                }
+                RawCommand::QuitGame => {
+                    game.state = GameState::Stalemate;
+                    break;
+                }
+                RawCommand::None => {}
+            },
+            _ => {}
+        }
     }
     Ok(())
 }
