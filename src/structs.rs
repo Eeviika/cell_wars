@@ -12,6 +12,7 @@ pub struct Game {
     pub difficulty: GameDifficulty,
     pub cursor_loc: TerminalPos,
     pub state: GameState,
+    pub status: Option<&'static str>,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Default)]
