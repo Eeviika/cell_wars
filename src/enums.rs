@@ -1,3 +1,5 @@
+use crate::structs::TerminalPos;
+
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum CityState {
     OwnedByPlayer,
@@ -51,10 +53,25 @@ pub enum RawCommand {
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum GameAction {
-    Produce,
-    UpgradeAttack,
-    UpgradeProduce,
-    DestroyWall(usize, usize),
-    AttackCity(usize, usize),
-    GenerateCity(usize, usize),
+    Produce {
+        source: TerminalPos,
+    },
+    UpgradeAttack {
+        source: TerminalPos,
+    },
+    UpgradeProduce {
+        source: TerminalPos,
+    },
+    DestroyWall {
+        source: TerminalPos,
+        target: TerminalPos,
+    },
+    AttackCity {
+        source: TerminalPos,
+        target: TerminalPos,
+    },
+    GenerateCity {
+        source: TerminalPos,
+        target: TerminalPos,
+    },
 }

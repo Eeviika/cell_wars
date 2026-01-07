@@ -44,12 +44,12 @@ impl fmt::Display for GameDifficulty {
 impl fmt::Display for GameAction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let text = match self {
-            GameAction::Produce => "Produce Resources",
-            GameAction::UpgradeAttack => "Upgrade Combat Readiness Level",
-            GameAction::UpgradeProduce => "Upgrade Production Level",
-            GameAction::AttackCity(_, _) => "Attack City",
-            GameAction::DestroyWall(_, _) => "Destroy Wall",
-            GameAction::GenerateCity(_, _) => "Build New City",
+            GameAction::Produce { .. } => "Produce Resources",
+            GameAction::UpgradeAttack { .. } => "Upgrade Combat Readiness Level",
+            GameAction::UpgradeProduce { .. } => "Upgrade Production Level",
+            GameAction::AttackCity { .. } => "Attack City",
+            GameAction::DestroyWall { .. } => "Destroy Wall",
+            GameAction::GenerateCity { .. } => "Build New City",
         };
         write!(f, "{}", text)
     }
