@@ -9,7 +9,12 @@ use crossterm::{
     execute, terminal,
 };
 use inquire::{self, InquireError};
-use std::io::{self, stdout};
+use std::io::Write;
+use std::{
+    fs::OpenOptions,
+    io::{self, stdout},
+    panic,
+};
 
 use crate::structs::*;
 use crate::{
@@ -120,6 +125,17 @@ fn main_game_loop(game: &mut Game) -> io::Result<()> {
 // Main
 
 fn main() -> io::Result<()> {
+    panic::set_hook(Box::new(|info| {
+        if let Ok(mut file) = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("panic.log")
+        {
+            let _ = writeln!(file, "{}", info);
+            let _ = writeln!(file, "{:?}", std::backtrace::Backtrace::force_capture());
+        }
+    }));
+
     let guard = GameGuard::new();
     let mut game = Game::default();
     main_menu_loop()?;
