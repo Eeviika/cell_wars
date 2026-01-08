@@ -128,11 +128,17 @@ fn main() -> io::Result<()> {
     panic::set_hook(Box::new(|info| {
         if let Ok(mut file) = OpenOptions::new()
             .create(true)
-            .append(true)
+            .write(true)
+            .truncate(true)
             .open("panic.log")
         {
+            let _ = writeln!(file, "Oops.");
             let _ = writeln!(file, "{}", info);
-            let _ = writeln!(file, "{:?}", std::backtrace::Backtrace::force_capture());
+            let _ = writeln!(
+                file,
+                "\nBacktrace:\n{}",
+                std::backtrace::Backtrace::force_capture()
+            );
         }
     }));
 
