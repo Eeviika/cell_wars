@@ -40,20 +40,26 @@ cargo build
 ## FAQ
 
 Q: Why is there no macOS release?
+
 A: Unsigned terminal binaries are often blocked by macOS security. I don't really know why... Anyways, you're gonna have to **Build It Yourself!**
 
 Q: When will the game be finished?
+
 A: Probably within the next few weeks. It's not a challenging project.
 
 Q: Can I contribute?
+
 A: Sure! Follow the steps in **Building** to get set up. Please base your changes off the `dev` branch.
 
 Q: The game panicked!
+
 A: If the game crashes, it should create a log at `./panic.log`. Please attach that when making an issue.
 
 Q: The game panicked, and it says "TODO"?
+
 A: Most likely you're running a pre-release binary. If this happens, it's not a bug and is being worked on. If you're **not** in a pre-release binary, then please submit an issue.
 
 Q: TEH EPIC DUCK IS COMIN!!1!1!!!
+
 A: We gotta save Builderman! And only **you** can help us!
 
