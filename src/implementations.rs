@@ -301,6 +301,7 @@ impl Game {
     }
 
     pub fn draw(&self) -> io::Result<()> {
+        clear_screen()?;
         self.draw_grid()?;
         self.draw_grid_text()?;
         self.draw_instructions()?;
