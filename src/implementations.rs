@@ -325,7 +325,7 @@ impl City {
     }
 
     pub fn get_power(&self) -> u32 {
-        let resources_bonus = self.resources.div_ceil(3);
+        let resources_bonus = self.resources.div_ceil(2);
         self.combat_level
             .saturating_add(self.generation_level)
             .saturating_add(resources_bonus)
