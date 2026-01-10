@@ -345,6 +345,52 @@ impl Game {
             .ok_or(GameError::NoCityAtTarget)
     }
 
+    pub fn do_action(&mut self, action: GameAction) -> Result<(), GameError> {
+        match action {
+            GameAction::Produce { source } => {
+                let source_city = match self.get_mut_city_at_pos(source) {
+                    Ok(city) => city,
+                    Err(game_error) => {
+                        if game_error == GameError::NoCityAtTarget {
+                            return Err(GameError::NoCityAtSource);
+                        }
+                        return Err(game_error);
+                    }
+                };
+                source_city.produce();
+                Ok(())
+            }
+            GameAction::UpgradeAttack { source } => {
+                let source_city = match self.get_mut_city_at_pos(source) {
+                    Ok(city) => city,
+                    Err(game_error) => {
+                        if game_error == GameError::NoCityAtTarget {
+                            return Err(GameError::NoCityAtSource);
+                        }
+                        return Err(game_error);
+                    }
+                };
+                source_city.upgrade_attack()?;
+                Ok(())
+            }
+            GameAction::UpgradeProduce { source } => {
+                let source_city = match self.get_mut_city_at_pos(source) {
+                    Ok(city) => city,
+                    Err(game_error) => {
+                        if game_error == GameError::NoCityAtTarget {
+                            return Err(GameError::NoCityAtSource);
+                        }
+                        return Err(game_error);
+                    }
+                };
+                source_city.upgrade_production()?;
+                Ok(())
+            }
+            _ => {
+                return Ok(());
+            }
+        }
+    }
 }
 
 impl City {
