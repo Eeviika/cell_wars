@@ -107,7 +107,6 @@ fn computer_turn(_game: &mut Game) {
 }
 
 fn main_game_loop(game: &mut Game) -> io::Result<()> {
-    clear_screen()?;
     execute!(stdout(), cursor::Hide)?;
     game.draw()?;
     terminal::enable_raw_mode()?;
