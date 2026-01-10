@@ -96,13 +96,15 @@ fn input_loop(game: &mut Game) -> io::Result<()> {
 }
 
 fn player_turn(game: &mut Game) -> io::Result<()> {
+    game.state = GameState::PlayerTurn;
     input_loop(game)?;
     Ok(())
 }
 
 // This will panic. Please implement first!
 // todo: implement computer_turn
-fn computer_turn(_game: &mut Game) {
+fn computer_turn(game: &mut Game) {
+    game.state = GameState::ComputerTurn;
     todo!("todo: implement computer_turn.");
 }
 
