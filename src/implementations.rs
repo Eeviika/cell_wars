@@ -331,6 +331,34 @@ impl City {
             .saturating_add(resources_bonus)
             .div_ceil(3)
     }
+
+    pub fn get_resource_amount_to_upgrade_attack(&self) -> u32 {
+        self.combat_level * 5
+    }
+
+    pub fn get_resource_amount_to_upgrade_produce(&self) -> u32 {
+        self.generation_level * 5
+    }
+
+    pub fn upgrade_attack(&mut self) -> Result<(), GameError> {
+        let threshold = self.get_resource_amount_to_upgrade_attack();
+        if self.resources < threshold {
+            return Err(GameError::NotEnoughResources);
+        }
+        self.combat_level += 1;
+        self.resources -= threshold;
+        Ok(())
+    }
+
+    pub fn upgrade_production(&mut self) -> Result<(), GameError> {
+        let threshold = self.get_resource_amount_to_upgrade_produce();
+        if self.resources < threshold {
+            return Err(GameError::NotEnoughResources);
+        }
+        self.generation_level += 1;
+        self.resources -= threshold;
+        Ok(())
+    }
 }
 
 impl Default for City {
