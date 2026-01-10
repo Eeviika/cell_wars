@@ -25,7 +25,7 @@ impl GameGuard {
     pub fn new() -> Self {
         let _ = terminal::enable_raw_mode();
         let _ = execute!(stdout(), terminal::EnterAlternateScreen);
-        return GameGuard {};
+        GameGuard {}
     }
 }
 
@@ -69,20 +69,19 @@ impl Cell {
 
         match city.state {
             CityState::Destroyed => {
-                return
-                    "A destroyed city.\r\n\t- It is, effectively, now just an obstacle.\r\n\t- Can be cleaned up for 5 Resources, turning it into an empty tile.\r\n\t- Probably has SOME use case...".into();
+                "A destroyed city.\r\n\t- It is, effectively, now just an obstacle.\r\n\t- Can be cleaned up for 5 Resources, turning it into an empty tile.\r\n\t- Probably has SOME use case...".into()
             }
             CityState::OwnedByPlayer => {
-                return format!(
+                format!(
                     "Your city.\r\n\t- Productivity Level: {}\r\n\t- Combat Readiness Level: {}\r\n\t- Resources: {}\r\n\t- Overall Power: {}",
                     city.generation_level,
                     city.combat_level,
                     city.resources,
                     city.get_power()
-                );
+                )
             }
             CityState::OwnedByComputer => {
-                return "Enemy city.\r\n\t- Statistics unknown.".into();
+                "Enemy city.\r\n\t- Statistics unknown.".into()
             }
         }
     }
@@ -387,7 +386,7 @@ impl Game {
                 Ok(())
             }
             _ => {
-                return Ok(());
+                Ok(())
             }
         }
     }

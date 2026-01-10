@@ -58,39 +58,36 @@ fn main_menu_loop() -> io::Result<()> {
 
 fn input_loop(game: &mut Game) -> io::Result<()> {
     loop {
-        match event::read()? {
-            event::Event::Key(key) => match key_to_command(key) {
-                RawCommand::MoveUp => {
-                    game.cursor_up();
-                    game.draw()?;
-                }
-                RawCommand::MoveDown => {
-                    game.cursor_down();
-                    game.draw()?;
-                }
-                RawCommand::MoveLeft => {
-                    game.cursor_left();
-                    game.draw()?;
-                }
-                RawCommand::MoveRight => {
-                    game.cursor_right();
-                    game.draw()?;
-                }
+        if let event::Event::Key(key) = event::read()? { match key_to_command(key) {
+            RawCommand::MoveUp => {
+                game.cursor_up();
+                game.draw()?;
+            }
+            RawCommand::MoveDown => {
+                game.cursor_down();
+                game.draw()?;
+            }
+            RawCommand::MoveLeft => {
+                game.cursor_left();
+                game.draw()?;
+            }
+            RawCommand::MoveRight => {
+                game.cursor_right();
+                game.draw()?;
+            }
 
-                RawCommand::Interact => {
-                    break;
-                }
-                RawCommand::EndTurn => {
-                    break;
-                }
-                RawCommand::QuitGame => {
-                    game.state = GameState::Stalemate;
-                    break;
-                }
-                RawCommand::None => {}
-            },
-            _ => {}
-        }
+            RawCommand::Interact => {
+                break;
+            }
+            RawCommand::EndTurn => {
+                break;
+            }
+            RawCommand::QuitGame => {
+                game.state = GameState::Stalemate;
+                break;
+            }
+            RawCommand::None => {}
+        } }
     }
     Ok(())
 }
