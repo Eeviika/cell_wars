@@ -309,10 +309,10 @@ impl Game {
     }
 
     fn is_valid_grid_position(&self, pos: TerminalPos) -> Result<(), GameError> {
-        if pos.0 < 0 || (pos.0 as usize) >= self.grid[0].len() {
+        if (pos.0 as usize) >= self.grid[0].len() {
             return Err(GameError::NotValidPosition);
         }
-        if pos.1 < 0 || (pos.1 as usize) >= self.grid.len() {
+        if (pos.1 as usize) >= self.grid.len() {
             return Err(GameError::NotValidPosition);
         }
         Ok(())
@@ -385,9 +385,7 @@ impl Game {
                 source_city.upgrade_production()?;
                 Ok(())
             }
-            _ => {
-                Ok(())
-            }
+            _ => Ok(()),
         }
     }
 }
