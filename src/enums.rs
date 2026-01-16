@@ -8,6 +8,16 @@ pub enum CityState {
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Default)]
+pub enum InputOutcome {
+    #[default]
+    None,
+    Redraw,
+    Interact,
+    EndTurn,
+    QuitGame,
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Default)]
 pub enum GameState {
     #[default]
     Setup,
