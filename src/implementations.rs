@@ -308,7 +308,7 @@ impl Game {
         Ok(())
     }
 
-    fn is_valid_grid_position(&self, pos: TerminalPos) -> Result<(), GameError> {
+    pub fn is_valid_grid_position(&self, pos: TerminalPos) -> Result<(), GameError> {
         if (pos.0 as usize) >= self.grid[0].len() {
             return Err(GameError::NotValidPosition);
         }
@@ -318,26 +318,26 @@ impl Game {
         Ok(())
     }
 
-    fn get_cell_at_pos(&self, pos: TerminalPos) -> Result<&Cell, GameError> {
+    pub fn get_cell_at_pos(&self, pos: TerminalPos) -> Result<&Cell, GameError> {
         self.is_valid_grid_position(pos)?;
 
         Ok(&self.grid[pos.1 as usize][pos.0 as usize])
     }
 
-    fn get_mut_cell_at_pos(&mut self, pos: TerminalPos) -> Result<&mut Cell, GameError> {
+    pub fn get_mut_cell_at_pos(&mut self, pos: TerminalPos) -> Result<&mut Cell, GameError> {
         self.is_valid_grid_position(pos)?;
 
         Ok(&mut self.grid[pos.1 as usize][pos.0 as usize])
     }
 
-    fn get_city_at_pos(&self, pos: TerminalPos) -> Result<&City, GameError> {
+    pub fn get_city_at_pos(&self, pos: TerminalPos) -> Result<&City, GameError> {
         self.get_cell_at_pos(pos)?
             .city
             .as_ref()
             .ok_or(GameError::NoCityAtTarget)
     }
 
-    fn get_mut_city_at_pos(&mut self, pos: TerminalPos) -> Result<&mut City, GameError> {
+    pub fn get_mut_city_at_pos(&mut self, pos: TerminalPos) -> Result<&mut City, GameError> {
         self.get_mut_cell_at_pos(pos)?
             .city
             .as_mut()
