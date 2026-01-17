@@ -9,8 +9,9 @@ use crossterm::{
     execute, terminal,
 };
 use inquire::{self, InquireError};
-use std::io::{IsTerminal, Write, stdin};
+use std::io::{ErrorKind, IsTerminal, Write, stdin};
 use std::{
+    fs,
     fs::OpenOptions,
     io::{self, stdout},
     panic,
@@ -230,6 +231,17 @@ fn check_if_terminal() {
         println!("Sorry, whatever you're running this in doesn't support TUI.");
         println!("Please use a different terminal emulator.");
         quit(-1);
+    }
+
+    // Check for OPEN_IN_TERMINAL.txt
+
+    match fs::remove_file("OPEN_IN_TERMINAL.txt") {
+        Ok(()) => {}
+        Err(e) if e.kind() == ErrorKind::NotFound => {}
+        Err(e) => {
+            println!("{}", e.kind());
+            wait_for_enter(false);
+        }
     }
 }
 
