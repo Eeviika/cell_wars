@@ -16,7 +16,10 @@ use std::{
     panic,
 };
 
-use crate::structs::*;
+use crate::{
+    enums::{CityState, GameError, InputOutcome},
+    structs::*,
+};
 use crate::{
     enums::{GameState, RawCommand},
     shared::*,
@@ -56,45 +59,106 @@ fn main_menu_loop() -> io::Result<()> {
     Ok(())
 }
 
-fn input_loop(game: &mut Game) -> io::Result<()> {
-    loop {
-        if let event::Event::Key(key) = event::read()? { match key_to_command(key) {
+fn do_input(game: &mut Game) -> io::Result<InputOutcome> {
+    if let event::Event::Key(key) = event::read()? {
+        match key_to_command(key) {
             RawCommand::MoveUp => {
+                let cursor_pos = game.cursor_loc;
                 game.cursor_up();
-                game.draw()?;
+                if cursor_pos != game.cursor_loc {
+                    return Ok(InputOutcome::Redraw);
+                }
+                Ok(InputOutcome::None)
             }
             RawCommand::MoveDown => {
+                let cursor_pos = game.cursor_loc;
                 game.cursor_down();
-                game.draw()?;
+                if cursor_pos != game.cursor_loc {
+                    return Ok(InputOutcome::Redraw);
+                }
+                Ok(InputOutcome::None)
             }
             RawCommand::MoveLeft => {
+                let cursor_pos = game.cursor_loc;
                 game.cursor_left();
-                game.draw()?;
+                if cursor_pos != game.cursor_loc {
+                    return Ok(InputOutcome::Redraw);
+                }
+                Ok(InputOutcome::None)
             }
             RawCommand::MoveRight => {
+                let cursor_pos = game.cursor_loc;
                 game.cursor_right();
-                game.draw()?;
+                if cursor_pos != game.cursor_loc {
+                    return Ok(InputOutcome::Redraw);
+                }
+                Ok(InputOutcome::None)
             }
-
-            RawCommand::Interact => {
-                break;
-            }
-            RawCommand::EndTurn => {
-                break;
-            }
-            RawCommand::QuitGame => {
-                game.state = GameState::Stalemate;
-                break;
-            }
-            RawCommand::None => {}
-        } }
+            RawCommand::Interact => Ok(InputOutcome::Interact),
+            RawCommand::EndTurn => Ok(InputOutcome::EndTurn),
+            RawCommand::QuitGame => Ok(InputOutcome::QuitGame),
+            RawCommand::None => Ok(InputOutcome::None),
+        }
+    } else {
+        Ok(InputOutcome::None)
     }
+}
+
+fn player_interact(pos: TerminalPos, game: &mut Game) -> Result<(), GameError> {
+    game.is_valid_grid_position(pos)?;
+    let cell = game.get_cell_at_pos(pos)?;
+
+    if cell.blocked {
+        game.status = Some("That's just a wall.");
+        return Err(GameError::NoCityAtTarget);
+    }
+
+    if cell.city.is_none() {
+        game.status = Some("There's no city there!");
+        return Err(GameError::NoCityAtTarget);
+    }
+
+    let city = game.get_city_at_pos(pos)?;
+
+    if city.state == CityState::OwnedByComputer {
+        game.status = Some("You cannot act on an opposing city!");
+        return Err(GameError::NoCityAtTarget);
+    }
+
+    if city.state == CityState::Destroyed {
+        game.status = Some("That city is destroyed...");
+        return Err(GameError::NoCityAtTarget);
+    }
+
+    // we're all good
+
+    // let action_menu = inquire::Select::new("Choose an action...", vec![]);
+
     Ok(())
 }
 
 fn player_turn(game: &mut Game) -> io::Result<()> {
     game.state = GameState::PlayerTurn;
-    input_loop(game)?;
+    loop {
+        let input = do_input(game)?;
+        match input {
+            InputOutcome::Redraw => {
+                game.draw()?;
+                game.status = None;
+            }
+            InputOutcome::Interact => {
+                let _ = player_interact(game.cursor_loc, game);
+            }
+            InputOutcome::EndTurn => {
+                break;
+            }
+            InputOutcome::None => {}
+            InputOutcome::QuitGame => {
+                game.state = GameState::Stalemate;
+                break;
+            }
+        }
+    }
     Ok(())
 }
 
