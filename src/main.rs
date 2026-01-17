@@ -115,8 +115,6 @@ fn main_game_loop(game: &mut Game) -> io::Result<()> {
     {
         player_turn(game)?;
         computer_turn(game);
-        clear_screen()?;
-        game.draw()?;
     }
     Ok(())
 }
