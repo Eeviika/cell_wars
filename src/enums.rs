@@ -46,6 +46,7 @@ pub enum GameError {
     TargetIsOccupied,
     TargetIsSource,
     NotEnoughResources,
+    NeedTargetPosition,
     IO,
 }
 

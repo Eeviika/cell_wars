@@ -41,15 +41,15 @@ impl fmt::Display for GameDifficulty {
     }
 }
 
-impl fmt::Display for GameAction {
+impl fmt::Display for GameActionSkeleton {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let text = match self {
-            GameAction::Produce { .. } => "Produce Resources",
-            GameAction::UpgradeAttack { .. } => "Upgrade Combat Readiness Level",
-            GameAction::UpgradeProduce { .. } => "Upgrade Production Level",
-            GameAction::AttackCity { .. } => "Attack City",
-            GameAction::DestroyWall { .. } => "Destroy Wall",
-            GameAction::GenerateCity { .. } => "Build New City",
+            GameActionSkeleton::Produce => "Produce Resources",
+            GameActionSkeleton::UpgradeAttack => "Upgrade Combat Readiness Level",
+            GameActionSkeleton::UpgradeProduce => "Upgrade Production Level",
+            GameActionSkeleton::AttackCity => "Attack City",
+            GameActionSkeleton::DestroyWall => "Destroy Wall",
+            GameActionSkeleton::GenerateCity => "Build New City",
         };
         write!(f, "{}", text)
     }
