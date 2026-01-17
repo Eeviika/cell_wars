@@ -9,7 +9,7 @@ use crossterm::{
     execute, terminal,
 };
 use inquire::{self, InquireError};
-use std::io::{IsTerminal, Write, stderr, stdin};
+use std::io::{IsTerminal, Write, stdin};
 use std::{
     fs::OpenOptions,
     io::{self, stdout},
@@ -188,10 +188,10 @@ fn is_in_terminal() -> bool {
 }
 
 fn supports_tui() -> bool {
-    io::stdin().is_terminal()
-        && io::stdout().is_terminal()
-        && crossterm::terminal::enable_raw_mode().is_ok_and(|_| {
-            let _ = crossterm::terminal::disable_raw_mode();
+    stdin().is_terminal()
+        && stdout().is_terminal()
+        && terminal::enable_raw_mode().is_ok_and(|_| {
+            let _ = terminal::disable_raw_mode();
             true
         })
 }
