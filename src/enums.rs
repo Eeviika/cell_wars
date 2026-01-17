@@ -62,6 +62,16 @@ pub enum RawCommand {
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum GameActionSkeleton {
+    Produce,
+    UpgradeAttack,
+    UpgradeProduce,
+    DestroyWall,
+    AttackCity,
+    GenerateCity,
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum GameAction {
     Produce {
         source: TerminalPos,
