@@ -55,6 +55,47 @@ impl fmt::Display for GameActionSkeleton {
     }
 }
 
+impl TryFrom<(GameActionSkeleton, TerminalPos, Option<TerminalPos>)> for GameAction {
+    type Error = GameError;
+
+    fn try_from(
+        value: (GameActionSkeleton, TerminalPos, Option<TerminalPos>),
+    ) -> Result<Self, Self::Error> {
+        let (skeleton, source, target) = value;
+
+        fn require_target(
+            source: TerminalPos,
+            target: Option<TerminalPos>,
+        ) -> Result<TerminalPos, GameError> {
+            let target = target.ok_or(GameError::NeedTargetPosition)?;
+            if target == source {
+                return Err(GameError::TargetIsSource);
+            }
+
+            Ok(target)
+        }
+
+        Ok(match skeleton {
+            GameActionSkeleton::Produce => GameAction::Produce { source },
+            GameActionSkeleton::UpgradeAttack => GameAction::UpgradeAttack { source },
+            GameActionSkeleton::UpgradeProduce => GameAction::UpgradeProduce { source },
+
+            GameActionSkeleton::DestroyWall => GameAction::DestroyWall {
+                source,
+                target: require_target(source, target)?,
+            },
+            GameActionSkeleton::AttackCity => GameAction::AttackCity {
+                source,
+                target: require_target(source, target)?,
+            },
+            GameActionSkeleton::GenerateCity => GameAction::GenerateCity {
+                source,
+                target: require_target(source, target)?,
+            },
+        })
+    }
+}
+
 impl Cell {
     pub fn info(&self) -> String {
         if self.blocked {
