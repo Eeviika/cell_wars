@@ -9,7 +9,7 @@ use crossterm::{
     execute, terminal,
 };
 use inquire::{self, InquireError};
-use std::io::Write;
+use std::io::{IsTerminal, Write, stderr, stdin};
 use std::{
     fs::OpenOptions,
     io::{self, stdout},
@@ -120,6 +120,57 @@ fn main_game_loop(game: &mut Game) -> io::Result<()> {
     }
     Ok(())
 }
+
+fn is_in_terminal() -> bool {
+    stdout().is_terminal() && stdin().is_terminal()
+}
+
+fn supports_tui() -> bool {
+    io::stdin().is_terminal()
+        && io::stdout().is_terminal()
+        && crossterm::terminal::enable_raw_mode().is_ok_and(|_| {
+            let _ = crossterm::terminal::disable_raw_mode();
+            true
+        })
+}
+
+fn check_if_terminal() {
+    if !is_in_terminal() {
+        if let Ok(mut file) = OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true)
+            .open("OPEN_IN_TERMINAL.txt")
+        {
+            let _ = writeln!(file, "Hey, you there! This is a TUI game!");
+            let _ = writeln!(file, "That means you should be opening this in a TERMINAL!");
+            let _ = writeln!(file, "Don't just open it from your file manager!");
+            let _ = writeln!(
+                file,
+                "Assuming you're on Linux (because that's usually how you get this error),"
+            );
+            let _ = writeln!(file, "Here's what to do:");
+            let _ = writeln!(file, "\t1. `cd` to this directory");
+            let _ = writeln!(
+                file,
+                "\t2. Type the name of this program in (') single quotes"
+            );
+            let _ = writeln!(file, "\t3. Press ENTER and play!");
+            let _ = writeln!(
+                file,
+                "\nThis file will delete itself once the program is properly opened."
+            );
+        }
+        quit(-1);
+    }
+
+    if !supports_tui() {
+        println!("Sorry, whatever you're running this in doesn't support TUI.");
+        println!("Please use a different terminal emulator.");
+        quit(-1);
+    }
+}
+
 // Main
 
 fn main() -> io::Result<()> {
@@ -139,6 +190,8 @@ fn main() -> io::Result<()> {
             );
         }
     }));
+
+    check_if_terminal();
 
     let guard = GameGuard::new();
     let mut game = Game::default();
