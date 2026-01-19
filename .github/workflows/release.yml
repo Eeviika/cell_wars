@@ -1,0 +1,97 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., v1.0.0)'
+        required: true
+        type: string
+      description:
+        description: 'Release description'
+        required: false
+        type: string
+        default: ''
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            target: x86_64-unknown-linux-gnu
+            binary_ext: ''
+            archive_ext: tar.gz
+          - os: windows-latest
+            platform: windows
+            target: x86_64-pc-windows-msvc
+            binary_ext: .exe
+            archive_ext: zip
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build release binary
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package binary (Linux)
+        if: matrix.platform == 'linux'
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czf cell_wars-${{ inputs.tag }}-${{ matrix.platform }}-x86_64.${{ matrix.archive_ext }} cell_wars${{ matrix.binary_ext }}
+          mv cell_wars-${{ inputs.tag }}-${{ matrix.platform }}-x86_64.${{ matrix.archive_ext }} ${{ github.workspace }}
+
+      - name: Package binary (Windows)
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          cd target/${{ matrix.target }}/release
+          Compress-Archive -Path cell_wars${{ matrix.binary_ext }} -DestinationPath ${{ github.workspace }}/cell_wars-${{ inputs.tag }}-${{ matrix.platform }}-x86_64.${{ matrix.archive_ext }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cell_wars-${{ matrix.platform }}-x86_64
+          path: cell_wars-${{ inputs.tag }}-${{ matrix.platform }}-x86_64.${{ matrix.archive_ext }}
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: Release ${{ inputs.tag }}
+          body: ${{ inputs.description }}
+          prerelease: ${{ inputs.prerelease }}
+          files: |
+            artifacts/cell_wars-linux-x86_64/cell_wars-${{ inputs.tag }}-linux-x86_64.tar.gz
+            artifacts/cell_wars-windows-x86_64/cell_wars-${{ inputs.tag }}-windows-x86_64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
