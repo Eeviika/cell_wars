@@ -17,6 +17,7 @@ use std::{
     panic,
 };
 
+use crate::enums::GameActionSkeleton;
 use crate::{
     enums::{CityState, GameError, InputOutcome},
     structs::*,
@@ -131,9 +132,25 @@ fn player_interact(pos: TerminalPos, game: &mut Game) -> Result<(), GameError> {
         return Err(GameError::NoCityAtTarget);
     }
 
-    // we're all good
+    let action_menu = inquire::Select::new(
+        "Choose an action...",
+        vec![
+            GameActionSkeleton::Produce,
+            GameActionSkeleton::UpgradeAttack,
+            GameActionSkeleton::UpgradeProduce,
+            GameActionSkeleton::GenerateCity,
+            GameActionSkeleton::AttackCity,
+            GameActionSkeleton::DestroyWall,
+        ],
+    );
 
-    // let action_menu = inquire::Select::new("Choose an action...", vec![]);
+    terminal::disable_raw_mode()?;
+
+    println!("\n");
+    let choice = action_menu.prompt();
+
+    terminal::enable_raw_mode()?;
+    execute!(stdout(), cursor::DisableBlinking)?;
 
     Ok(())
 }
