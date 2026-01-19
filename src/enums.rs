@@ -1,4 +1,5 @@
 use crate::structs::TerminalPos;
+use std::io;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum CityState {
@@ -47,7 +48,7 @@ pub enum GameError {
     TargetIsSource,
     NotEnoughResources,
     NeedTargetPosition,
-    IO,
+    IO(io::ErrorKind),
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]

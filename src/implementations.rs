@@ -1,3 +1,6 @@
+use crate::enums::*;
+use crate::shared::*;
+use crate::structs::*;
 use crossterm::{
     cursor, execute,
     style::{Color, Print},
@@ -5,14 +8,11 @@ use crossterm::{
 };
 use inquire::{self};
 use rand::prelude::*;
+use std::io::Error;
 use std::{
     fmt,
     io::{self, stdout},
 };
-
-use crate::enums::*;
-use crate::shared::*;
-use crate::structs::*;
 
 impl Drop for GameGuard {
     fn drop(&mut self) {
@@ -52,6 +52,12 @@ impl fmt::Display for GameActionSkeleton {
             GameActionSkeleton::GenerateCity => "Build New City",
         };
         write!(f, "{}", text)
+    }
+}
+
+impl From<std::io::Error> for GameError {
+    fn from(err: Error) -> Self {
+        GameError::IO(err.kind())
     }
 }
 
