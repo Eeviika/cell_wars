@@ -164,7 +164,6 @@ fn player_turn(game: &mut Game) -> io::Result<()> {
 }
 
 // This will panic. Please implement first!
-// todo: implement computer_turn
 fn computer_turn(game: &mut Game) {
     game.state = GameState::ComputerTurn;
     todo!("todo: implement computer_turn.");
