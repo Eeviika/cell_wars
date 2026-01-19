@@ -236,11 +236,13 @@ fn check_if_terminal() {
     // Check for OPEN_IN_TERMINAL.txt
 
     match fs::remove_file("OPEN_IN_TERMINAL.txt") {
-        Ok(()) => {}
-        Err(e) if e.kind() == ErrorKind::NotFound => {}
+        Ok(()) => {}                                    // cool, we removed the file
+        Err(e) if e.kind() == ErrorKind::NotFound => {} // it's fine, file didn't exist anyway
         Err(e) => {
+            // real shit
+            println!("Could not delete OPEN_IN_TERMINAL.txt:");
             println!("{}", e.kind());
-            wait_for_enter(false);
+            let _ = wait_for_enter(false);
         }
     }
 }
