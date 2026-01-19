@@ -228,8 +228,8 @@ fn check_if_terminal() {
     }
 
     if !supports_tui() {
-        println!("Sorry, whatever you're running this in doesn't support TUI.");
-        println!("Please use a different terminal emulator.");
+        println!("Sorry, whatever terminal you're running this in won't work with this game.");
+        println!("Please use a different terminal (emulator).");
         quit(-1);
     }
 
